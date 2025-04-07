@@ -46,7 +46,7 @@ namespace Assignment_2
 
             // Question 7: Palindrome Number
             Console.WriteLine("Question 7:");
-            int palindromeNumber = 121;
+            int palindromeNumber = 0;
             bool isPalindrome = IsPalindrome(palindromeNumber);
             Console.WriteLine(isPalindrome);
 
@@ -62,8 +62,34 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return new List<int>(); // Placeholder
+                // Edge Case: Empty array
+                if (nums == null || nums.Length == 0)
+                    return new List<int>();
+
+                List<int> missing = new List<int>();
+
+                // First pass: Mark the indices corresponding to the numbers as visited (negative)
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    int index = Math.Abs(nums[i]) - 1;
+
+                    // Only mark if in bounds and not already marked
+                    if (index >= 0 && index < nums.Length && nums[index] > 0)
+                    {
+                        nums[index] = -nums[index];
+                    }
+                }
+
+                // Second pass: If value at index is positive, number (index + 1) is missing
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    if (nums[i] > 0)
+                    {
+                        missing.Add(i + 1);
+                    }
+                }
+
+                return missing;
             }
             catch (Exception)
             {
@@ -76,8 +102,36 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return new int[0]; // Placeholder
+                // Edge Case: Null or empty array
+                if (nums == null || nums.Length == 0)
+                    return nums;
+
+                int left = 0;
+                int right = nums.Length - 1;
+
+                // Use two-pointer approach to push evens to the front, odds to the back
+                while (left < right)
+                {
+                    if (nums[left] % 2 == 0)
+                    {
+                        left++; // already even, move on
+                    }
+                    else if (nums[right] % 2 == 1)
+                    {
+                        right--; // already odd, move on
+                    }
+                    else
+                    {
+                        // Swap left (odd) and right (even)
+                        int temp = nums[left];
+                        nums[left] = nums[right];
+                        nums[right] = temp;
+                        left++;
+                        right--;
+                    }
+                }
+
+                return nums;
             }
             catch (Exception)
             {
@@ -90,8 +144,28 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return new int[0]; // Placeholder
+                // Edge Case: Null or insufficient length
+                if (nums == null || nums.Length < 2)
+                    return new int[0];
+
+                // Use dictionary to store previously seen numbers and their indices
+                Dictionary<int, int> mapping = new Dictionary<int, int>();
+
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    int complement = target - nums[i];
+
+                    // Check if the complement is already seen
+                    if (mapping.ContainsKey(complement))
+                    {
+                        return new int[] { mapping[complement], i };
+                    }
+
+                    // Store current number and its index
+                    mapping[nums[i]] = i;
+                }
+
+                return new int[0]; // No solution found
             }
             catch (Exception)
             {
@@ -104,8 +178,17 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return 0; // Placeholder
+                // Edge Case: Less than 3 elements
+                if (nums == null || nums.Length < 3)
+                    throw new ArgumentException("At least 3 numbers required");
+
+                Array.Sort(nums); // Sort array to access smallest/largest values
+
+                int n = nums.Length;
+
+                // Two candidates: 3 largest numbers, or 2 smallest and largest
+                return Math.Max(nums[n - 1] * nums[n - 2] * nums[n - 3],
+                                nums[0] * nums[1] * nums[n - 1]);
             }
             catch (Exception)
             {
@@ -118,8 +201,24 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return "101010"; // Placeholder
+                // Edge Case: 0 input
+                if (decimalNumber == 0)
+                    return "0";
+
+                // Edge Case: Negative number
+                if (decimalNumber < 0)
+                    throw new ArgumentException("Input must be non-negative");
+
+                string binary = "";
+
+                // Convert decimal to binary by repeated division
+                while (decimalNumber > 0)
+                {
+                    binary = (decimalNumber % 2) + binary;
+                    decimalNumber /= 2;
+                }
+
+                return binary;
             }
             catch (Exception)
             {
@@ -132,8 +231,31 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return 0; // Placeholder
+                // Edge Case: Empty or null
+                if (nums == null || nums.Length == 0)
+                    throw new ArgumentException("Array cannot be empty");
+
+                int left = 0;
+                int right = nums.Length - 1;
+
+                // Binary search to find the smallest element
+                while (left < right)
+                {
+                    int mid = left + (right - left) / 2;
+
+                    if (nums[mid] > nums[right])
+                    {
+                        // Minimum must be on the right
+                        left = mid + 1;
+                    }
+                    else
+                    {
+                        // Minimum is at mid or to the left
+                        right = mid;
+                    }
+                }
+
+                return nums[left];
             }
             catch (Exception)
             {
@@ -146,8 +268,22 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return false; // Placeholder
+                // Edge Case: Negative numbers are never palindromes
+                if (x < 0) return false;
+
+                int original = x;
+                int reversed = 0;
+
+                // Reverse the number
+                while (x != 0)
+                {
+                    int digit = x % 10;
+                    reversed = reversed * 10 + digit;
+                    x /= 10;
+                }
+
+                // Check if reversed equals original
+                return original == reversed;
             }
             catch (Exception)
             {
@@ -160,8 +296,23 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return 0; // Placeholder
+                // Edge Case: Negative input
+                if (n < 0)
+                    throw new ArgumentException("Input must be non-negative");
+
+                if (n <= 1) return n;
+
+                int a = 0, b = 1, c = 0;
+
+                // Iteratively compute Fibonacci up to nth term
+                for (int i = 2; i <= n; i++)
+                {
+                    c = a + b;
+                    a = b;
+                    b = c;
+                }
+
+                return c;
             }
             catch (Exception)
             {
